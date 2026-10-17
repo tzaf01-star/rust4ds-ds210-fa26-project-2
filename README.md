@@ -1,6 +1,6 @@
 # Project 2: Build Your Own Vec
 
-**Author:** _your name here_
+**Author:** Timur Zafesov
 
 
 
@@ -78,3 +78,4 @@ Answer the questions from the project handout here, under the headings below. Le
 ### 7. Something that failed at first, and how you adapted
 
 ### AI citation
+Project 1. I used AI for guidence and verification of my code as well as assistant on understanding of how and why does the code work and does not. 
