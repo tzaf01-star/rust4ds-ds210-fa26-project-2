@@ -1,4 +1,7 @@
-use std::{fmt::{Display, Formatter}, ptr::{self, null_mut}};
+use std::{
+    fmt::{Display, Formatter},
+    ptr::{self, null_mut},
+};
 
 use malloc::MALLOC;
 
@@ -53,7 +56,9 @@ impl<T> FastVec<T> {
                 v.push(element);
             }
         }
-        unsafe { MALLOC.free(self.ptr_to_data as *mut u8); }
+        unsafe {
+            MALLOC.free(self.ptr_to_data as *mut u8);
+        }
         self.ptr_to_data = null_mut();
         self.len = 0;
         self.capacity = 0;
@@ -75,15 +80,40 @@ impl<T> FastVec<T> {
 
     // Use the project handout as a guide for this part!
     pub fn get(&self, i: usize) -> &T {
-        todo!("implement get!");
+        if i >= self.len {
+            panic!("FastVec: get out of bounds");
+        }
+        unsafe { &*self.ptr_to_data.add(i) }
     }
 
     pub fn push(&mut self, t: T) {
         if self.len == self.capacity {
-            todo!("implement growing the vector, using self.growth to pick the new capacity!");
-        } else {
-            todo!("implement pushing t directly since the vector still has capacity!");
+            let new_capacity = self.growth.next_capacity(self.capacity);
+
+            let new_ptr =
+                unsafe { MALLOC.malloc(std::mem::size_of::<T>() * new_capacity) as *mut T };
+
+            unsafe {
+                for i in 0..self.len {
+                    let old_ptr = self.ptr_to_data.add(i);
+                    let destination = new_ptr.add(i);
+
+                    let element = ptr::read(old_ptr);
+                    ptr::write(destination, element);
+                }
+
+                MALLOC.free(self.ptr_to_data as *mut u8);
+            }
+
+            self.ptr_to_data = new_ptr;
+            self.capacity = new_capacity;
         }
+
+        unsafe {
+            ptr::write(self.ptr_to_data.add(self.len), t);
+        }
+
+        self.len += 1;
     }
 
     pub fn remove(&mut self, i: usize) {
@@ -95,7 +125,9 @@ impl<T> FastVec<T> {
     //       cargo run --bin fast_memory
     pub fn clear(&mut self) {
         if !self.ptr_to_data.is_null() {
-            unsafe { MALLOC.free(self.ptr_to_data as *mut u8); }
+            unsafe {
+                MALLOC.free(self.ptr_to_data as *mut u8);
+            }
         }
         self.ptr_to_data = null_mut();
         self.len = 0;
@@ -110,7 +142,7 @@ impl<T: Display> Display for FastVec<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "FastVec[")?;
         if self.len > 0 {
-            for i in 0..self.len()-1 {
+            for i in 0..self.len() - 1 {
                 write!(f, "{}, ", self.get(i))?;
             }
             write!(f, "{}", self.get(self.len - 1))?;

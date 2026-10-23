@@ -78,4 +78,5 @@ Answer the questions from the project handout here, under the headings below. Le
 ### 7. Something that failed at first, and how you adapted
 
 ### AI citation
-Project 1. I used AI for guidence and verification of my code as well as assistant on understanding of how and why does the code work and does not. 
+Project 2.1 I used AI for guidence and verification of my code as well as assistant on understanding of how and why does the code work and does not. 
+Project 2.2 I used ChatGPT to help implement Growth::next_capacity(), FastVec::get(), and FastVec::push(). ChatGPT provided example code, explained Rust concepts including raw pointers, memory allocation, and ownership, and helped debug compilation errors. I used these explanations to understand the implementation and troubleshoot my code.
