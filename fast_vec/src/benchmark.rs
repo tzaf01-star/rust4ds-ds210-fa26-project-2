@@ -34,6 +34,15 @@ fn main() {
     series.push(("Double", time_fast_pushes(FastVec::with_growth(Growth::Double), n, every)));
     // YOUR CHOICES GO HERE.
 
+    series.push((
+    "Add(10000)",
+    time_fast_pushes(FastVec::with_growth(Growth::Add(10_000)), n, every),));
+
+    series.push((
+    "Add(100000)",
+    time_fast_pushes(FastVec::with_growth(Growth::Add(100_000)), n, every),));
+
+
     plot("benchmark_growth.png", "Growth strategies", series);
 }
 
