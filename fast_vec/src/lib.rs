@@ -117,25 +117,44 @@ impl<T> FastVec<T> {
     }
 
     pub fn remove(&mut self, i: usize) {
-        todo!("implement remove");
+        if i >= self.len{
+            panic!("FastVec: remove out of bounds");
+        };
+    unsafe{
+    let removed = ptr::read(self.ptr_to_data.add(i));
+    for j in (i+1)..self.len{
+        let value = ptr::read(self.ptr_to_data.add(j));
+        ptr::write(self.ptr_to_data.add(j-1),value);}
+        self.len -= 1;
+        drop(removed)
+    }
     }
 
     // This appears correct but with further testing, you will notice it has a bug!
     // Hint: check out case 2 in memory.rs, which you can run using
     //       cargo run --bin fast_memory
     pub fn clear(&mut self) {
-        if !self.ptr_to_data.is_null() {
+       for i in 0..self.len {
             unsafe {
-                MALLOC.free(self.ptr_to_data as *mut u8);
+                let value = ptr::read(self.ptr_to_data.add(i));
+                drop(value);}
             }
+    if !self.ptr_to_data.is_null() {
+        unsafe {
+        MALLOC.free(self.ptr_to_data as *mut u8);
         }
+    }
         self.ptr_to_data = null_mut();
         self.len = 0;
         self.capacity = 0;
     }
 }
-
 // YOUR Drop GOES HERE (checkpoint 3).
+impl<T> Drop for FastVec<T>{
+    fn drop(&mut self){
+       self.clear();
+    }
+}
 
 // This allows printing FastVecs with println!.
 impl<T: Display> Display for FastVec<T> {

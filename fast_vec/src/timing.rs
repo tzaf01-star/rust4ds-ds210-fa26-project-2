@@ -20,9 +20,32 @@ use slow_vec::SlowVec;
 use crate::FastVec;
 
 pub fn time_fast_pushes(mut fast_vec: FastVec<u64>, n: usize, every: usize) -> Vec<(usize, f64)> {
-    todo!("time_fast_pushes")
+    let mut samples = Vec::new();
+    let start = Instant::now();
+
+    for i in 0..n{
+        fast_vec.push(i as u64);
+
+        if (i+1)% every == 0 {
+            let elapsed = start.elapsed().as_secs_f64() * 1000.0;
+            samples.push((i+1, elapsed));
+        }
+    }
+    samples
 }
 
 pub fn time_slow_pushes(n: usize, every: usize) -> Vec<(usize, f64)> {
-    todo!("time_slow_pushes")
+     let mut samples = Vec::new();
+    let mut slow_vec = SlowVec::new();
+    let start = Instant::now();
+
+    for i in 0..n {
+        slow_vec.push(i as u64);
+
+        if (i + 1) % every == 0 {
+            let elapsed = start.elapsed().as_secs_f64() * 1000.0;
+            samples.push((i + 1, elapsed));
+        }
+    }
+    samples
 }
